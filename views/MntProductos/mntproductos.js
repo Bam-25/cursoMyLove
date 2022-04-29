@@ -1,7 +1,9 @@
 var tabla;
 
 function init() {
-    
+    $("#producto_form").on("submit", function(e){
+        guardaryeditar(e);
+    });
 }
 
 $(document).ready(function(){
@@ -60,4 +62,94 @@ $(document).ready(function(){
     }).DataTable();
 });
 
+function guardaryeditar(e) {
+
+    e.preventDefault();
+    var formData = new FormData($("#producto_form")[0]);
+
+    $.ajax({
+        url: "../../controller/producto.php?op=guardaryeditar",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+
+        success: function(datos) {
+
+            $('#producto_form')[0].reset();
+            $("#modalmantenimiento").modal('hide');
+            $('#producto_data').DataTable().ajax.reload();
+
+            swal.fire(
+                'Registro',
+                'Registro correcto!',
+                'success'
+            )
+            /*
+            Swal.fire({
+                title: 'Quieres guardar los cambios?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Guardar',
+                denyButtonText: `No guardar`,
+              }).then((datos) => {
+                //Read more about isConfirmed, isDenied below 
+                if (result.isConfirmed) {
+
+                    $.post("../../controller/producto.php?op=guardaryeditar", {prod_id:prod_id}, function(data){
+
+                    });
+                    
+                  Swal.fire('Guardado correctamente!', '', 'success')
+                } else if (result.isDenied) {
+                    $.post("../../controller/producto.php?op=mostrar", {prod_id:prod_id}, function(data){
+
+                    });
+                  Swal.fire('Los cambios no fueron guardados', '', 'info')
+                }
+              })*/
+            
+        }
+    });
+    
+}
+
+function editar(prod_id) {
+    console.log(prod_id);    
+}
+
+function eliminar(prod_id) {
+
+    swal.fire({
+        title: 'Eliminar',
+        text: "Esta seguro de eliminar el registro?",
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed){
+
+            $.post("../../controller/producto.php?op=eliminar", {prod_id:prod_id}, function(data){
+
+            });
+
+            $('#producto_data').DataTable().ajax.reload();
+
+            swal.fire(
+                'Eliminado!',
+                'El registro se eliminó correctamente',
+                'success'
+            )
+        }
+    })
+}
+
+$(document).on("click", "#btnnuevo", function(){
+    $('#mdltitulo').html('Nuevo Registro');
+    $('#modalmantenimiento').modal('show');
+});
+
 init();
+

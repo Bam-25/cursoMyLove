@@ -28,10 +28,38 @@
             
             # code...
             break;
-        
-        default:
+
+        case "guardaryeditar":
             # code...
+            $datos = $producto-> get_producto_x_id($_POST["prod_id"]);
+            if (empty($_POST["prod_id"])) {
+                if (is_array($datos)==true and count($datos)==0) {
+                    # code...
+                    $producto->insert_producto($_POST["prod_nom"]);
+                }
+                # code...
+            }else{
+                $producto->update_producto_x_id($_POST["prod_id"]);
+            }
             break;
+
+        case "mostrar":
+            # code...
+            $datos=$producto->get_producto_x_id($POST["prod_id"]);
+            if(is_array($datos)==true and count($datos)>0){
+                foreach($datos as $row){
+                    $output["prod_id"] = $row["prod_id"];
+                    $output["prod_nom"] = $row["prod_nom"];
+                }
+            }
+            break;
+
+        case "eliminar":
+            # code...
+            $producto->delete_producto($_POST["prod_id"]);
+            break;
+        
+       
     }
 
 ?>
